@@ -1,0 +1,3 @@
+[submodule "resources/configs"]
+	path = resources/configs
+	url = git@github.com:m3co/configs.git
