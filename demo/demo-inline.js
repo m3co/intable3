@@ -8,6 +8,17 @@ var tmplCol = document.querySelector('template#col');
 var table = document.querySelector('table');
 var tbody = table.querySelector('tbody');
 
+table.addEventListener('submit-entry', e => {
+  var form = e.detail.form;
+  var entry = e.detail.entry;
+  var update = e.detail.update;
+
+  Object.keys(form).forEach(key => {
+    entry[key] = form[key];
+  });
+  update(entry);
+});
+
 function setupCol(el, key, entry, description, editMode = false) {
   var td = el.querySelector('td');
   description.type = description.type || 'text';
@@ -17,15 +28,11 @@ function setupCol(el, key, entry, description, editMode = false) {
 
   var form = el.querySelector('form');
   var span = el.querySelector('span');
-  span.textContent = entry[key];
-
-  checkPlaceholder();
-
   var input = form.querySelector('input');
-  input.value = entry[key];
   input.name = key;
   input.type = description.type;
   input.placeholder = description.text;
+  update(entry);
 
   function toggle(doFocus = true) {
     span.hidden = !span.hidden;
@@ -33,26 +40,38 @@ function setupCol(el, key, entry, description, editMode = false) {
     if (!form.hidden && doFocus) {
       input.focus();
     }
-    checkPlaceholder();
+    update(entry);
   }
 
   span.addEventListener('click', toggle);
   input.addEventListener('blur', toggle);
 
   form.addEventListener('submit', e => {
-    input.blur();
     e.preventDefault();
 
-    var id = e.target.closest('tr').querySelector('input[name="id"]').value;
+    var idEl = e.target.closest('tr').querySelector('input[name="id"]');
+    var id = idEl.value;
     var fd = new FormData(e.target).toJSON();
     fd.id = id;
+    table.dispatchEvent(new CustomEvent('submit-entry', {
+      detail: {
+        entry: entry,
+        form: fd,
+        update: (entry) => {
+          update(entry);
+          input.blur();
+        }
+      }
+    }));
   });
 
   if (editMode) {
     toggle(false);
   }
 
-  function checkPlaceholder() {
+  function update(entry) {
+    input.value = entry[key];
+    span.textContent = entry[key];
     if (!entry[key]) {
       span.innerHTML = `<span style="color:gray;">${description.text}</span>`;
     }
