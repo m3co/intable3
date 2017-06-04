@@ -4,23 +4,18 @@
     "type": "hidden"
   },
   "firstName": {
-    "text": "First Name",
-    "type": "text"
+    "text": "First Name"
   },
   "lastName": {
-    "text": "Last Name",
-    "type": "text"
+    "text": "Last Name"
   },
   "email": {
-    "text": "Email",
-    "type": "text"
+    "text": "Email"
   },
   "createdAt": {
-    "text": "Created At",
-    "type": "date"
+    "text": "Created At"
   },
   "ip_address": {
-    "text": "Ip Address",
-    "type": "text"
+    "text": "Ip Address"
   }
 }
