@@ -1,0 +1,26 @@
+{
+  "id": {
+    "text": "Id",
+    "type": "hidden"
+  },
+  "firstName": {
+    "text": "First Name",
+    "type": "text"
+  },
+  "lastName": {
+    "text": "Last Name",
+    "type": "text"
+  },
+  "email": {
+    "text": "Email",
+    "type": "text"
+  },
+  "createdAt": {
+    "text": "Created At",
+    "type": "date"
+  },
+  "ip_address": {
+    "text": "Ip Address",
+    "type": "text"
+  }
+}
