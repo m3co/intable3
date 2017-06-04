@@ -1,6 +1,6 @@
 'use strict';
 document.currentFragment.loaded.then(fragment => {
-  var table = document.querySelector('table');
+  var table = fragment.querySelector('table');
   var tbody = table.querySelector('tbody');
 
   var lastId = 5500;
@@ -26,10 +26,10 @@ document.currentFragment.loaded.then(fragment => {
     update();
   });
 
-  var tmplThead = document.querySelector('template#thead');
-  var tmplTheadCol = document.querySelector('template#thead-col');
-  var tmplRow = document.querySelector('template#row');
-  var tmplCol = document.querySelector('template#col');
+  var tmplThead = fragment.querySelector('template#thead');
+  var tmplTheadCol = fragment.querySelector('template#thead-col');
+  var tmplRow = fragment.querySelector('template#row');
+  var tmplCol = fragment.querySelector('template#col');
 
   function setupCol(el, key, entry, description, editMode = false) {
     var td = el.querySelector('td');
@@ -141,7 +141,7 @@ document.currentFragment.loaded.then(fragment => {
       });
     });
 
-    var btnAdd = document.querySelector('button#add');
+    var btnAdd = fragment.querySelector('button#add');
     btnAdd.addEventListener('click', () => {
       tbody.insertBefore(createEntry(Object.keys(columns).reduce((acc, key) => {
         acc[key] = '';
