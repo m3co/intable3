@@ -21,8 +21,14 @@ table.addEventListener('submit-entry', e => {
   if (!entry.id) {
     entry.id = lastId++;
   }
-  console.log(entry);
   update(entry);
+});
+
+table.addEventListener('delete-entry', e => {
+  var entry = e.detail.entry;
+  var update = e.detail.update;
+
+  update();
 });
 
 function setupCol(el, key, entry, description, editMode = false) {
@@ -109,7 +115,14 @@ fetch('describe-dummy.json').then(response => response.json()).then(columns => {
     var tr = cloneRow.querySelector('tr');
     var btnDelete = cloneRow.querySelector('button#delete');
     btnDelete.addEventListener('click', () => {
-      tr.remove();
+      table.dispatchEvent(new CustomEvent('delete-entry', {
+        detail: {
+          entry: entry,
+          update: function() {
+            tr.remove();
+          }
+        }
+      }));
     });
 
     Object.keys(entry).forEach(key => {
