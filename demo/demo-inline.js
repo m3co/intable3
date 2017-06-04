@@ -49,6 +49,7 @@ function setupCol(el, key, entry, description) {
 
 fetch('describe-dummy.json').then(response => response.json()).then(columns => {
   var cloneThead = document.importNode(tmplThead.content, true);
+  var tr = cloneThead.querySelector('tr');
   Object.keys(columns).forEach(key => {
     var cloneTheadCol = document.importNode(tmplTheadCol.content, true);
     var span = cloneTheadCol.querySelector('span');
@@ -56,8 +57,10 @@ fetch('describe-dummy.json').then(response => response.json()).then(columns => {
     if (columns[key].type === 'hidden') {
       cloneTheadCol.querySelector('td').hidden = true;
     }
-    cloneThead.querySelector('tr').appendChild(cloneTheadCol);
+    tr.appendChild(cloneTheadCol);
   });
+  // move actions to the last place
+  tr.appendChild(tr.querySelector('[actions=""]'));
   table.appendChild(cloneThead);
 
   fetch('dummy.json').then(response => response.json()).then(entries => {
@@ -74,6 +77,8 @@ fetch('describe-dummy.json').then(response => response.json()).then(columns => {
         setupCol(cloneCol, key, entry, columns[key]);
         tr.appendChild(cloneCol);
       });
+      // move actions to the last place
+      tr.appendChild(tr.querySelector('[actions=""]'));
       tbody.appendChild(cloneRow);
     });
   });
