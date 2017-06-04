@@ -25,6 +25,7 @@ function setupCol(el, key, entry, description, editMode = false) {
   input.value = entry[key];
   input.name = key;
   input.type = description.type;
+  input.placeholder = description.text;
 
   function toggle(doFocus = true) {
     span.hidden = !span.hidden;
