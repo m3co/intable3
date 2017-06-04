@@ -1,6 +1,31 @@
 <!doctype html>
 <html>
+  <head>
+    <script defer src="demo-inline.js"></script>
+  </head>
   <body>
-    This is my demo
+    <template id="col">
+      <td>
+        <span>Value 1</span>
+        <form hidden>
+          <input>
+        </form>
+      </td>
+    </template>
+    <template id="row">
+      <tr>
+      </tr>
+    </template>
+
+    <table>
+      <thead>
+        <tr>
+          <td>Column 1</td>
+          <td>Column 2</td>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
   </body>
 </html>
