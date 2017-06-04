@@ -8,6 +8,7 @@ var tmplCol = document.querySelector('template#col');
 var table = document.querySelector('table');
 var tbody = table.querySelector('tbody');
 
+var lastId = 5500;
 table.addEventListener('submit-entry', e => {
   var form = e.detail.form;
   var entry = e.detail.entry;
@@ -16,6 +17,11 @@ table.addEventListener('submit-entry', e => {
   Object.keys(form).forEach(key => {
     entry[key] = form[key];
   });
+
+  if (!entry.id) {
+    entry.id = lastId++;
+  }
+  console.log(entry);
   update(entry);
 });
 
@@ -70,6 +76,10 @@ function setupCol(el, key, entry, description, editMode = false) {
   }
 
   function update(entry) {
+    var tr = form.closest('tr');
+    if (tr && entry.id) {
+      tr.querySelector('input[name="id"]').value = entry.id;
+    }
     input.value = entry[key];
     span.textContent = entry[key];
     if (!entry[key]) {
