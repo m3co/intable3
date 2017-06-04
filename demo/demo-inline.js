@@ -19,6 +19,8 @@ function setupCol(el, key, entry, description, editMode = false) {
   var span = el.querySelector('span');
   span.textContent = entry[key];
 
+  checkPlaceholder();
+
   var input = form.querySelector('input');
   input.value = entry[key];
   input.name = key;
@@ -30,6 +32,7 @@ function setupCol(el, key, entry, description, editMode = false) {
     if (!form.hidden && doFocus) {
       input.focus();
     }
+    checkPlaceholder();
   }
 
   span.addEventListener('click', toggle);
@@ -46,6 +49,12 @@ function setupCol(el, key, entry, description, editMode = false) {
 
   if (editMode) {
     toggle(false);
+  }
+
+  function checkPlaceholder() {
+    if (!entry[key]) {
+      span.innerHTML = `<span style="color:gray;">${description.text}</span>`;
+    }
   }
 }
 
