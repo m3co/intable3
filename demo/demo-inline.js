@@ -44,7 +44,6 @@ function setupCol(el, key, entry, description) {
     e.preventDefault();
 
     var fd = new FormData(e.target).toJSON();
-    console.log(fd);
   });
 }
 
@@ -64,10 +63,16 @@ fetch('describe-dummy.json').then(response => response.json()).then(columns => {
   fetch('dummy.json').then(response => response.json()).then(entries => {
     entries.forEach(entry => {
       var cloneRow = document.importNode(tmplRow.content, true);
+      var tr = cloneRow.querySelector('tr');
+      var btnDelete = cloneRow.querySelector('button#delete');
+      btnDelete.addEventListener('click', () => {
+        tr.remove();
+      });
+
       Object.keys(entry).forEach(key => {
         var cloneCol = document.importNode(tmplCol.content, true);
         setupCol(cloneCol, key, entry, columns[key]);
-        cloneRow.querySelector('tr').appendChild(cloneCol);
+        tr.appendChild(cloneCol);
       });
       tbody.appendChild(cloneRow);
     });

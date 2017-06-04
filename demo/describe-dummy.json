@@ -13,7 +13,8 @@
     "text": "Email"
   },
   "createdAt": {
-    "text": "Created At"
+    "text": "Created At",
+    "type": "hidden"
   },
   "ip_address": {
     "text": "Ip Address"
