@@ -38,7 +38,7 @@ document.currentFragment.loaded.then(fragment => {
     update();
   });
 
-  fetch('describe-dummy.json').then(response => response.json()).then(columns => {
+  fetch('/api/datas/describe').then(response => response.json()).then(columns => {
     var cloneThead = document.importNode(tmplThead.content, true);
     var tr = cloneThead.querySelector('tr');
     Object.keys(columns).forEach(key => {
@@ -79,7 +79,7 @@ document.currentFragment.loaded.then(fragment => {
       return cloneRow;
     }
 
-    fetch('dummy.json').then(response => response.json()).then(entries => {
+    fetch('/api/datas').then(response => response.json()).then(entries => {
       entries.forEach(entry => {
         tbody.appendChild(createEntry(entry));
       });
