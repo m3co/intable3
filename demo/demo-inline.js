@@ -12,7 +12,8 @@ document.currentFragment.loaded.then(fragment => {
 
   super();
   var urlDescribe = this.getAttribute('url-describe');
-  var urlGet = this.getAttribute('url-get');
+  var urlIndex = this.getAttribute('url-index');
+  var urlDelete = this.getAttribute('url-delete');
 
   var cloneTableSpace = document.importNode(tmplTableSpace.content, true);
   var table = cloneTableSpace.querySelector('table');
@@ -37,8 +38,23 @@ document.currentFragment.loaded.then(fragment => {
   table.addEventListener('delete-entry', e => {
     var entry = e.detail.entry;
     var update = e.detail.update;
-
-    update();
+    var concreteUrlDelete = urlDelete;
+    var params = urlDelete.match(/:\w+/g);
+    if (params) {
+      var values = params.map(item => entry[item.slice(1)]);
+      concreteUrlDelete = params.reduce((url, param, i) => {
+        url = url.replace(param, values[i])
+        return url;
+      }, concreteUrlDelete);
+    }
+    fetch(concreteUrlDelete, {
+      method: 'delete'
+    }).then(response => response.json()).then(result => {
+      if (result.status === 'error') {
+        console.error(entry, concreteUrlDelete, result.message);
+      }
+      update();
+    });
   });
 
   fetch(urlDescribe).then(response => response.json()).then(columns => {
@@ -82,7 +98,7 @@ document.currentFragment.loaded.then(fragment => {
       return cloneRow;
     }
 
-    fetch(urlGet).then(response => response.json()).then(entries => {
+    fetch(urlIndex).then(response => response.json()).then(entries => {
       entries.forEach(entry => {
         tbody.appendChild(createEntry(entry));
       });
