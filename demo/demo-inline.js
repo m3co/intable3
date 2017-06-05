@@ -9,78 +9,11 @@ document.currentFragment.loaded.then(fragment => {
 
   class InlineTable3HTMLElement extends HTMLElement {
     constructor() {
-      super();
-      var cloneTableSpace = document.importNode(tmplTableSpace.content, true);
-      var table = cloneTableSpace.querySelector('table');
-      var tbody = table.querySelector('tbody');
 
-  fetch('describe-dummy.json').then(response => response.json()).then(columns => {
-    var cloneThead = document.importNode(tmplThead.content, true);
-    var tr = cloneThead.querySelector('tr');
-    Object.keys(columns).forEach(key => {
-      var cloneTheadCol = document.importNode(tmplTheadCol.content, true);
-      var span = cloneTheadCol.querySelector('span');
-      span.textContent = columns[key].text;
-      if (columns[key].type === 'hidden') {
-        cloneTheadCol.querySelector('td').hidden = true;
-      }
-      tr.appendChild(cloneTheadCol);
-    });
-    // move actions to the last place
-    tr.appendChild(tr.querySelector('[actions=""]'));
-    table.appendChild(cloneThead);
-
-    function createEntry(entry, editMode = false) {
-      var cloneRow = document.importNode(tmplRow.content, true);
-      var tr = cloneRow.querySelector('tr');
-      var btnDelete = cloneRow.querySelector('button#delete');
-      btnDelete.addEventListener('click', () => {
-        this.dispatchEvent(new CustomEvent('delete-entry', {
-          detail: {
-            entry: entry,
-            update: function() {
-              tr.remove();
-            }
-          }
-        }));
-      });
-
-      Object.keys(entry).forEach(key => {
-        var cloneCol = document.importNode(tmplCol.content, true);
-        setupCol.bind(this)(cloneCol, key, entry, columns[key], editMode);
-        tr.appendChild(cloneCol);
-      });
-      // move actions to the last place
-      tr.appendChild(tr.querySelector('[actions=""]'));
-      return cloneRow;
-    }
-
-    fetch('dummy.json').then(response => response.json()).then(entries => {
-      entries.forEach(entry => {
-        tbody.appendChild(createEntry.bind(this)(entry));
-      });
-    });
-
-    var btnAdd = cloneTableSpace.querySelector('button#add');
-    btnAdd.addEventListener('click', () => {
-      tbody.insertBefore(createEntry.bin(this)(Object.keys(columns).reduce((acc, key) => {
-        acc[key] = '';
-        return acc;
-      }, {}), true), tbody.firstElementChild);
-    });
-
-    this.appendChild(cloneTableSpace);
-  });
-
-    }
-    connectedCallback() {
-
-    }
-  }
-
-  customElements.define('x-inline-table', InlineTable3HTMLElement);
-
-  var table = document.querySelector('x-inline-table');
+  super();
+  var cloneTableSpace = document.importNode(tmplTableSpace.content, true);
+  var table = cloneTableSpace.querySelector('table');
+  var tbody = table.querySelector('tbody');
 
   var lastId = 5500;
   table.addEventListener('submit-entry', e => {
@@ -103,6 +36,64 @@ document.currentFragment.loaded.then(fragment => {
     var update = e.detail.update;
 
     update();
+  });
+
+  fetch('describe-dummy.json').then(response => response.json()).then(columns => {
+    var cloneThead = document.importNode(tmplThead.content, true);
+    var tr = cloneThead.querySelector('tr');
+    Object.keys(columns).forEach(key => {
+      var cloneTheadCol = document.importNode(tmplTheadCol.content, true);
+      var span = cloneTheadCol.querySelector('span');
+      span.textContent = columns[key].text;
+      if (columns[key].type === 'hidden') {
+        cloneTheadCol.querySelector('td').hidden = true;
+      }
+      tr.appendChild(cloneTheadCol);
+    });
+    // move actions to the last place
+    tr.appendChild(tr.querySelector('[actions=""]'));
+    table.appendChild(cloneThead);
+
+    function createEntry(entry, editMode = false) {
+      var cloneRow = document.importNode(tmplRow.content, true);
+      var tr = cloneRow.querySelector('tr');
+      var btnDelete = cloneRow.querySelector('button#delete');
+      btnDelete.addEventListener('click', () => {
+        table.dispatchEvent(new CustomEvent('delete-entry', {
+          detail: {
+            entry: entry,
+            update: function() {
+              tr.remove();
+            }
+          }
+        }));
+      });
+
+      Object.keys(entry).forEach(key => {
+        var cloneCol = document.importNode(tmplCol.content, true);
+        setupCol(cloneCol, key, entry, columns[key], editMode);
+        tr.appendChild(cloneCol);
+      });
+      // move actions to the last place
+      tr.appendChild(tr.querySelector('[actions=""]'));
+      return cloneRow;
+    }
+
+    fetch('dummy.json').then(response => response.json()).then(entries => {
+      entries.forEach(entry => {
+        tbody.appendChild(createEntry(entry));
+      });
+    });
+
+    var btnAdd = cloneTableSpace.querySelector('button#add');
+    btnAdd.addEventListener('click', () => {
+      tbody.insertBefore(createEntry(Object.keys(columns).reduce((acc, key) => {
+        acc[key] = '';
+        return acc;
+      }, {}), true), tbody.firstElementChild);
+    });
+
+    this.appendChild(cloneTableSpace);
   });
 
   function setupCol(el, key, entry, description, editMode = false) {
@@ -139,7 +130,7 @@ document.currentFragment.loaded.then(fragment => {
       var id = idEl.value;
       var fd = new FormData(e.target).toJSON();
       fd.id = id;
-      this.dispatchEvent(new CustomEvent('submit-entry', {
+      table.dispatchEvent(new CustomEvent('submit-entry', {
         detail: {
           entry: entry,
           form: fd,
@@ -167,5 +158,9 @@ document.currentFragment.loaded.then(fragment => {
       }
     }
   }
+
+    }
+  }
+  customElements.define('x-inline-table', InlineTable3HTMLElement);
 
 });
