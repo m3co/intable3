@@ -7,19 +7,33 @@ document.currentFragment.loaded.then(fragment => {
   var tmplCol = fragment.querySelector('template#col');
   var tmplTableSpace = fragment.querySelector('template#inline3-space');
 
+  function bringAboutURL(url, entry) {
+    var concreteUrl = url;
+    var params = url.match(/:\w+/g);
+    if (params) {
+      var values = params.map(item => entry[item.slice(1)]);
+      concreteUrl = params.reduce((url, param, i) => {
+        url = url.replace(param, values[i])
+        return url;
+      }, concreteUrl);
+    }
+    return concreteUrl;
+  }
   class InlineTable3HTMLElement extends HTMLElement {
     constructor() {
 
   super();
   var urlDescribe = this.getAttribute('url-describe');
+  var urlCreate = this.getAttribute('url-create');
   var urlIndex = this.getAttribute('url-index');
+  var urlShow = this.getAttribute('url-show');
+  var urlUpdate = this.getAttribute('url-update');
   var urlDelete = this.getAttribute('url-delete');
 
   var cloneTableSpace = document.importNode(tmplTableSpace.content, true);
   var table = cloneTableSpace.querySelector('table');
   var tbody = table.querySelector('tbody');
 
-  var lastId = 5500;
   table.addEventListener('submit-entry', e => {
     var form = e.detail.form;
     var entry = e.detail.entry;
@@ -29,8 +43,10 @@ document.currentFragment.loaded.then(fragment => {
       entry[key] = form[key];
     });
 
+    var action;
     if (!entry.id) {
       entry.id = lastId++;
+    } else {
     }
     update(entry);
   });
@@ -38,16 +54,7 @@ document.currentFragment.loaded.then(fragment => {
   table.addEventListener('delete-entry', e => {
     var entry = e.detail.entry;
     var update = e.detail.update;
-    var concreteUrlDelete = urlDelete;
-    var params = urlDelete.match(/:\w+/g);
-    if (params) {
-      var values = params.map(item => entry[item.slice(1)]);
-      concreteUrlDelete = params.reduce((url, param, i) => {
-        url = url.replace(param, values[i])
-        return url;
-      }, concreteUrlDelete);
-    }
-    fetch(concreteUrlDelete, {
+    fetch(bringAboutURL(urlDelete, entry), {
       method: 'delete'
     }).then(response => response.json()).then(result => {
       if (result.status === 'error') {
