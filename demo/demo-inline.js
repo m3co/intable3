@@ -11,6 +11,9 @@ document.currentFragment.loaded.then(fragment => {
     constructor() {
 
   super();
+  var urlDescribe = this.getAttribute('url-describe');
+  var urlGet = this.getAttribute('url-get');
+
   var cloneTableSpace = document.importNode(tmplTableSpace.content, true);
   var table = cloneTableSpace.querySelector('table');
   var tbody = table.querySelector('tbody');
@@ -38,7 +41,7 @@ document.currentFragment.loaded.then(fragment => {
     update();
   });
 
-  fetch('/api/datas/describe').then(response => response.json()).then(columns => {
+  fetch(urlDescribe).then(response => response.json()).then(columns => {
     var cloneThead = document.importNode(tmplThead.content, true);
     var tr = cloneThead.querySelector('tr');
     Object.keys(columns).forEach(key => {
@@ -79,7 +82,7 @@ document.currentFragment.loaded.then(fragment => {
       return cloneRow;
     }
 
-    fetch('/api/datas').then(response => response.json()).then(entries => {
+    fetch(urlGet).then(response => response.json()).then(entries => {
       entries.forEach(entry => {
         tbody.appendChild(createEntry(entry));
       });
