@@ -16,7 +16,7 @@ app.post('/api/data', (req, res) => {
     var datas = JSON.parse(data);
     var lastId = datas.reduce((max, curr) => {
       if (max < curr.id) {
-        max = curr.id;
+        max = Number(curr.id);
       }
       return max;
     }, -1);
@@ -60,7 +60,7 @@ app.put('/api/data/:id', (req, res) => {
   var newItem = req.body;
   fs.readFile('dummy.json', 'utf8', (err, data) => {
     var datas = JSON.parse(data);
-    var item = datas.find(item => id === item.id);
+    var item = datas.find(item => id === Number(item.id));
     Object.keys(newItem).forEach(key => {
       item[key] = newItem[key];
     });

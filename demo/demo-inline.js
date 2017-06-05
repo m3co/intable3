@@ -1,6 +1,9 @@
 'use strict';
 document.currentFragment.loaded.then(fragment => {
 
+  var headers = new Headers();
+  headers.append('Content-Type', 'application/json');
+
   var tmplThead = fragment.querySelector('template#thead');
   var tmplTheadCol = fragment.querySelector('template#thead-col');
   var tmplRow = fragment.querySelector('template#row');
@@ -45,20 +48,36 @@ document.currentFragment.loaded.then(fragment => {
 
     var action;
     if (!entry.id) {
-      entry.id = lastId++;
+      action = fetch(bringAboutURL(urlCreate, entry), {
+        method: 'post',
+        headers: headers,
+        body: JSON.stringify(form)
+      });
     } else {
+      action = fetch(bringAboutURL(urlUpdate, entry), {
+        method: 'put',
+        headers: headers,
+        body: JSON.stringify(form)
+      });
     }
-    update(entry);
+    action.then(response => response.json()).then(newEntry => {
+      Object.keys(newEntry).forEach(key => {
+        entry[key] = newEntry[key];
+      });
+      update(entry);
+    });
   });
 
   table.addEventListener('delete-entry', e => {
     var entry = e.detail.entry;
     var update = e.detail.update;
-    fetch(bringAboutURL(urlDelete, entry), {
-      method: 'delete'
+    var url = bringAboutURL(urlDelete, entry);
+    fetch(url, {
+      method: 'delete',
+      headers: headers
     }).then(response => response.json()).then(result => {
       if (result.status === 'error') {
-        console.error(entry, concreteUrlDelete, result.message);
+        console.error(entry, url, result.message);
       }
       update();
     });
@@ -147,9 +166,6 @@ document.currentFragment.loaded.then(fragment => {
     }
 
     span.addEventListener('click', toggle);
-    input.addEventListener('change', e => {
-      form.dispatchEvent(new FormEvent('submit'));
-    });
     input.addEventListener('blur', toggle);
 
     form.addEventListener('submit', e => {
