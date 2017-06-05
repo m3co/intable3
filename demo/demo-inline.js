@@ -121,6 +121,9 @@ document.currentFragment.loaded.then(fragment => {
     }
 
     span.addEventListener('click', toggle);
+    input.addEventListener('change', e => {
+      form.dispatchEvent(new FormEvent('submit'));
+    });
     input.addEventListener('blur', toggle);
 
     form.addEventListener('submit', e => {
