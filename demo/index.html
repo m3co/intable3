@@ -13,6 +13,15 @@
       url-show="/api/data/:id"
       url-update="/api/data/:id"
       url-delete="/api/data/:id">
+      <template col="email">
+        <td>
+          <span style="background-color:red;"></span>
+          <form hidden>
+            <input>
+            <input type="submit" hidden>
+          </form>
+        </td>
+      </template>
     </x-inline-table>
   </body>
 </html>

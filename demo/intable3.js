@@ -24,8 +24,9 @@ document.currentFragment.loaded.then(fragment => {
   }
   class InlineTable3HTMLElement extends HTMLElement {
     constructor() {
-
-  super();
+      super();
+    }
+    connectedCallback() {
   var urlDescribe = this.getAttribute('url-describe');
   var urlCreate = this.getAttribute('url-create');
   var urlIndex = this.getAttribute('url-index');
@@ -99,7 +100,7 @@ document.currentFragment.loaded.then(fragment => {
     tr.appendChild(tr.querySelector('[actions=""]'));
     table.appendChild(cloneThead);
 
-    function createEntry(entry, editMode = false) {
+    var createEntry = (entry, editMode = false) => {
       var cloneRow = document.importNode(tmplRow.content, true);
       var tr = cloneRow.querySelector('tr');
       var btnDelete = cloneRow.querySelector('button#delete');
@@ -115,24 +116,25 @@ document.currentFragment.loaded.then(fragment => {
       });
 
       Object.keys(entry).forEach(key => {
-        var cloneCol = document.importNode(tmplCol.content, true);
+        var _tmplCol = this.querySelector(`template[col="${key}"]`) || tmplCol;
+        var cloneCol = document.importNode(_tmplCol.content, true);
         setupCol(cloneCol, key, entry, columns[key], editMode);
         tr.appendChild(cloneCol);
       });
       // move actions to the last place
       tr.appendChild(tr.querySelector('[actions=""]'));
       return cloneRow;
-    }
+    };
 
     fetch(urlIndex).then(response => response.json()).then(entries => {
       entries.forEach(entry => {
-        tbody.appendChild(createEntry(entry));
+        tbody.appendChild(createEntry.bind(this)(entry));
       });
     });
 
     var btnAdd = cloneTableSpace.querySelector('button#add');
     btnAdd.addEventListener('click', () => {
-      tbody.insertBefore(createEntry(Object.keys(columns).reduce((acc, key) => {
+      tbody.insertBefore(createEntry.bind(this)(Object.keys(columns).reduce((acc, key) => {
         acc[key] = '';
         return acc;
       }, {}), true), tbody.firstElementChild);
