@@ -180,6 +180,9 @@ document.currentFragment.loaded.then(fragment => {
 
     span.addEventListener('click', toggle);
     input.addEventListener('blur', toggle);
+    input.addEventListener('change', e => {
+      form.dispatchEvent(new Event('submit'));
+    });
 
     form.addEventListener('submit', e => {
       e.preventDefault();

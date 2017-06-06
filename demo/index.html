@@ -17,6 +17,7 @@
       url-show="/api/data/:id"
       url-update="/api/data/:id"
       url-delete="/api/data/:id">
+
       <template col="email">
         <td>
           <span></span>
@@ -28,6 +29,7 @@
           <script src="template-col-email.js"></script>
         </td>
       </template>
+
       <template id="row">
         <tr entry-id=":id">
           <td actions>
@@ -37,7 +39,6 @@
         <tr entry-id=":id">
           <td colspan="5"
             entry-id=":id">
-            <script src="template-row.js"></script>
             <template>
               <x-inline-table
                 url-describe="/api/datas/describe"
@@ -48,6 +49,7 @@
                 url-delete="/api/data/:id">
               </x-inline-table>
             </template>
+            <script src="template-row.js"></script>
           </td>
         </tr>
       </template>
