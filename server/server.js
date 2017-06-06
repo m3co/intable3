@@ -42,9 +42,18 @@ app.get('/api/datas/describe', (req, res) => {
   });
 });
 
+app.get('/api/datas/sliced2', (req, res) => {
+  fs.readFile('dummy.json', 'utf8', (err, data) => {
+    res.json(JSON.parse(data).slice(0, 5).map(item => {
+      item.email = "my email is: " + item.email;
+      return item;
+    }));
+  });
+});
+
 app.get('/api/datas/sliced', (req, res) => {
   fs.readFile('dummy.json', 'utf8', (err, data) => {
-    res.json(JSON.parse(data).slice(0, 10));
+    res.json(JSON.parse(data).slice(0, 3));
   });
 });
 

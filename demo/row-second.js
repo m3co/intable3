@@ -5,8 +5,6 @@
   var clone = document.importNode(tmpl.content, true);
 
   var table = clone.querySelector('x-inline-table');
-  var entryId = td.getAttribute('entry-id');
-  table.setAttribute('url-index', table.getAttribute('url-index') + '?apuid=' + entryId);
 
   var tr1 = td.closest('tr');
   var tr2 = tr1.previousElementSibling;

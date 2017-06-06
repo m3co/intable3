@@ -10,7 +10,7 @@
   </head>
   <x-fragment src="intable3.html"></x-fragment>
   <body>
-    <x-inline-table
+    <x-inline-table esto-es-zero
       url-describe="/api/datas/describe"
       url-create="/api/data"
       url-index="/api/datas"
@@ -39,16 +39,42 @@
         <tr entry-id=":id">
           <td colspan="5"
             entry-id=":id">
-            <template>
-              <x-inline-table
+
+            <template entry-email=":email">
+              <x-inline-table esto-es-primero
                 url-describe="/api/datas/describe"
                 url-create="/api/data"
-                url-index="/api/datas/sliced"
+                url-index="/api/datas/sliced2"
                 url-show="/api/data/:id"
                 url-update="/api/data/:id"
                 url-delete="/api/data/:id">
+
+                <template id="row">
+                  <tr entry-id=":id">
+                    <td actions>
+                      <button id="delete">Deletare</button>
+                    </td>
+                  </tr>
+                  <tr entry-id=":id">
+                    <td colspan="5">
+                      <template entry-email2=":email">
+                        <x-inline-table esto-es-segundo
+                          url-describe="/api/datas/describe"
+                          url-create="/api/data"
+                          url-index="/api/datas/sliced"
+                          url-show="/api/data/:id"
+                          url-update="/api/data/:id"
+                          url-delete="/api/data/:id">
+                        </x-inline-table>
+                      </template>
+                      <script src="row-second.js"></script>
+                    </td>
+                  </tr>
+                </template>
+
               </x-inline-table>
             </template>
+
             <script src="template-row.js"></script>
           </td>
         </tr>
