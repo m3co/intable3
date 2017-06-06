@@ -8,24 +8,25 @@ document.currentFragment.MaterialFragment.loaded.then(fragment => {
   var tmplTheadCol = fragment.querySelector('template#thead-col');
   var tmplRow = fragment.querySelector('template#row');
   var tmplCol = fragment.querySelector('template#col');
-  var tmplTableSpace = fragment.querySelector('template#inline3-space');
+  var tmplTable = fragment.querySelector('template#table');
 
-  function bringAboutURL(url, entry) {
-    var concreteUrl = url;
-    var params = url.match(/:\w+/g);
+  function doTemplateOverText(text, entry) {
+    var concreteText = text;
+    var params = text.match(/:\w+/g);
     if (params) {
       var values = params.map(item => entry[item.slice(1)]);
-      concreteUrl = params.reduce((url, param, i) => {
+      concreteText = params.reduce((url, param, i) => {
         url = url.replace(param, values[i])
         return url;
-      }, concreteUrl);
+      }, concreteText);
     }
-    return concreteUrl;
+    return concreteText;
   }
   class InlineTable3HTMLElement extends HTMLElement {
     constructor() {
-
-  super();
+      super();
+    }
+    connectedCallback() {
   var urlDescribe = this.getAttribute('url-describe');
   var urlCreate = this.getAttribute('url-create');
   var urlIndex = this.getAttribute('url-index');
@@ -33,8 +34,9 @@ document.currentFragment.MaterialFragment.loaded.then(fragment => {
   var urlUpdate = this.getAttribute('url-update');
   var urlDelete = this.getAttribute('url-delete');
 
-  var cloneTableSpace = document.importNode(tmplTableSpace.content, true);
-  var table = cloneTableSpace.querySelector('table');
+  var cloneTable = document.importNode((
+    this.querySelector('template#table') || tmplTable).content, true);
+  var table = cloneTable.querySelector('table');
   var tbody = table.querySelector('tbody');
 
   table.addEventListener('submit-entry', e => {
@@ -48,13 +50,13 @@ document.currentFragment.MaterialFragment.loaded.then(fragment => {
 
     var action;
     if (!entry.id) {
-      action = fetch(bringAboutURL(urlCreate, entry), {
+      action = fetch(doTemplateOverText(urlCreate, entry), {
         method: 'post',
         headers: headers,
         body: JSON.stringify(form)
       });
     } else {
-      action = fetch(bringAboutURL(urlUpdate, entry), {
+      action = fetch(doTemplateOverText(urlUpdate, entry), {
         method: 'put',
         headers: headers,
         body: JSON.stringify(form)
@@ -71,7 +73,7 @@ document.currentFragment.MaterialFragment.loaded.then(fragment => {
   table.addEventListener('delete-entry', e => {
     var entry = e.detail.entry;
     var update = e.detail.update;
-    var url = bringAboutURL(urlDelete, entry);
+    var url = doTemplateOverText(urlDelete, entry);
     fetch(url, {
       method: 'delete',
       headers: headers
@@ -99,8 +101,19 @@ document.currentFragment.MaterialFragment.loaded.then(fragment => {
     tr.appendChild(tr.querySelector('[actions=""]'));
     table.appendChild(cloneThead);
 
-    function createEntry(entry, editMode = false) {
-      var cloneRow = document.importNode(tmplRow.content, true);
+    var createEntry = (entry, editMode = false) => {
+      var cloneRow = document.importNode(
+        (this.querySelector('template#row') || tmplRow).content, true);
+
+      var tw = document.createTreeWalker(cloneRow,
+        NodeFilter.SHOW_ELEMENT);
+      while(tw.nextNode()) {
+        [...tw.currentNode.attributes].forEach(attribute => {
+          if (/^entry/.test(attribute.name)) {
+            attribute.value = doTemplateOverText(attribute.value, entry);
+          }
+        });
+      }
       var tr = cloneRow.querySelector('tr');
       var btnDelete = cloneRow.querySelector('button#delete');
       btnDelete.addEventListener('click', () => {
@@ -115,30 +128,31 @@ document.currentFragment.MaterialFragment.loaded.then(fragment => {
       });
 
       Object.keys(entry).forEach(key => {
-        var cloneCol = document.importNode(tmplCol.content, true);
+        var _tmplCol = this.querySelector(`template[col="${key}"]`) || tmplCol;
+        var cloneCol = document.importNode(_tmplCol.content, true);
         setupCol(cloneCol, key, entry, columns[key], editMode);
         tr.appendChild(cloneCol);
       });
       // move actions to the last place
       tr.appendChild(tr.querySelector('[actions=""]'));
       return cloneRow;
-    }
+    };
 
     fetch(urlIndex).then(response => response.json()).then(entries => {
       entries.forEach(entry => {
-        tbody.appendChild(createEntry(entry));
+        tbody.appendChild(createEntry.bind(this)(entry));
       });
     });
 
-    var btnAdd = cloneTableSpace.querySelector('button#add');
+    var btnAdd = cloneTable.querySelector('button#add');
     btnAdd.addEventListener('click', () => {
-      tbody.insertBefore(createEntry(Object.keys(columns).reduce((acc, key) => {
+      tbody.insertBefore(createEntry.bind(this)(Object.keys(columns).reduce((acc, key) => {
         acc[key] = '';
         return acc;
       }, {}), true), tbody.firstElementChild);
     });
 
-    this.appendChild(cloneTableSpace);
+    this.appendChild(cloneTable);
   });
 
   function setupCol(el, key, entry, description, editMode = false) {
@@ -167,6 +181,9 @@ document.currentFragment.MaterialFragment.loaded.then(fragment => {
 
     span.addEventListener('click', toggle);
     input.addEventListener('blur', toggle);
+    input.addEventListener('change', e => {
+      form.dispatchEvent(new Event('submit'));
+    });
 
     form.addEventListener('submit', e => {
       e.preventDefault();
