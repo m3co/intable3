@@ -35,15 +35,19 @@
           </td>
         </tr>
         <tr>
-          <td colspan="5">
-            <x-inline-table
-              url-describe="/api/datas/describe"
-              url-create="/api/data"
-              url-index="/api/datas/sliced?id=${id}"
-              url-show="/api/data/:id"
-              url-update="/api/data/:id"
-              url-delete="/api/data/:id">
-            </x-inline-table>
+          <td colspan="5"
+            entry-apu-id=":id">
+            <script src="template-row.js"></script>
+            <template>
+              <x-inline-table
+                url-describe="/api/datas/describe"
+                url-create="/api/data"
+                url-index="/api/datas/sliced"
+                url-show="/api/data/:id"
+                url-update="/api/data/:id"
+                url-delete="/api/data/:id">
+              </x-inline-table>
+            </template>
           </td>
         </tr>
       </template>

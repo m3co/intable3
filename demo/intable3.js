@@ -10,17 +10,17 @@ document.currentFragment.loaded.then(fragment => {
   var tmplCol = fragment.querySelector('template#col');
   var tmplTableSpace = fragment.querySelector('template#inline3-space');
 
-  function bringAboutURL(url, entry) {
-    var concreteUrl = url;
-    var params = url.match(/:\w+/g);
+  function doTemplateOverText(text, entry) {
+    var concreteText = text;
+    var params = text.match(/:\w+/g);
     if (params) {
       var values = params.map(item => entry[item.slice(1)]);
-      concreteUrl = params.reduce((url, param, i) => {
+      concreteText = params.reduce((url, param, i) => {
         url = url.replace(param, values[i])
         return url;
-      }, concreteUrl);
+      }, concreteText);
     }
-    return concreteUrl;
+    return concreteText;
   }
   class InlineTable3HTMLElement extends HTMLElement {
     constructor() {
@@ -49,13 +49,13 @@ document.currentFragment.loaded.then(fragment => {
 
     var action;
     if (!entry.id) {
-      action = fetch(bringAboutURL(urlCreate, entry), {
+      action = fetch(doTemplateOverText(urlCreate, entry), {
         method: 'post',
         headers: headers,
         body: JSON.stringify(form)
       });
     } else {
-      action = fetch(bringAboutURL(urlUpdate, entry), {
+      action = fetch(doTemplateOverText(urlUpdate, entry), {
         method: 'put',
         headers: headers,
         body: JSON.stringify(form)
@@ -72,7 +72,7 @@ document.currentFragment.loaded.then(fragment => {
   table.addEventListener('delete-entry', e => {
     var entry = e.detail.entry;
     var update = e.detail.update;
-    var url = bringAboutURL(urlDelete, entry);
+    var url = doTemplateOverText(urlDelete, entry);
     fetch(url, {
       method: 'delete',
       headers: headers
@@ -103,16 +103,16 @@ document.currentFragment.loaded.then(fragment => {
     var createEntry = (entry, editMode = false) => {
       var cloneRow = document.importNode(
         (this.querySelector('template#row') || tmplRow).content, true);
-      [...cloneRow.children].forEach(child => {
-        var found = child.innerHTML.match(/[$][{]\w+[}]/g);
-        if (found) {
-          child.innerHTML = found.map(item => item.replace(/[${}]/g, ''))
-            .reduce((acc, key) => {
-              acc = acc.replace('${' + key + '}', entry[key]);
-              return acc;
-            }, child.innerHTML);
-        }
-      });
+
+      var tw = document.createTreeWalker(cloneRow,
+        NodeFilter.SHOW_ELEMENT);
+      while(tw.nextNode()) {
+        [...tw.currentNode.attributes].forEach(attribute => {
+          if (/^entry/.test(attribute.name)) {
+            attribute.value = doTemplateOverText(attribute.value, entry);
+          }
+        });
+      }
       var tr = cloneRow.querySelector('tr');
       var btnDelete = cloneRow.querySelector('button#delete');
       btnDelete.addEventListener('click', () => {
