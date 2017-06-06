@@ -89,4 +89,19 @@
       </template>
     </x-inline-table>
   </body>
+  <script>
+    'use strict';
+    (() => {
+      var table = document.querySelector('x-inline-table[esto-es-zero=""]');
+      table.addEventListener('create-row', e => {
+        console.log(e.detail, 'created row');
+      });
+      table.addEventListener('update-row', e => {
+        console.log(e.detail, 'update row');
+      });
+      table.addEventListener('delete-row', e => {
+        console.log(e.detail, 'delete row');
+      });
+    })();
+  </script>
 </html>
