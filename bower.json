@@ -1,0 +1,22 @@
+{
+  "name": "intable3",
+  "description": "CE/Fragment that allows to work with tables with CRUD",
+  "main": "gulpfile.js",
+  "authors": [
+    "Andres Rios <rianby64@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/m3co/intable3",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "choices.js": "^2.8.4",
+    "pseudoimport-html": "^1.3.11"
+  }
+}
