@@ -1,0 +1,33 @@
+body {
+	font-size: 12px;
+	font-family: 'Helvetica', serif;
+}
+.choices__inner {
+	min-height: auto;
+	padding: 3px 0 3.75px;
+}
+
+.choices {
+	margin-bottom: 0;
+}
+
+table table {
+	width: 100%;
+}
+
+tr:hover {
+	background: rgba(151, 156, 163, .4);
+}
+
+.choices[data-type*=select-one] .choices__inner {
+	padding: 0;
+}
+
+.choices__list--single {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+.choices[data-type*=select-one]:after {
+	right: 2px;
+}
