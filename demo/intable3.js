@@ -101,7 +101,8 @@ document.currentFragment.loaded.then(fragment => {
     table.appendChild(cloneThead);
 
     var createEntry = (entry, editMode = false) => {
-      var cloneRow = document.importNode(tmplRow.content, true);
+      var cloneRow = document.importNode(
+        (this.querySelector('template#row') || tmplRow).content, true);
       var tr = cloneRow.querySelector('tr');
       var btnDelete = cloneRow.querySelector('button#delete');
       btnDelete.addEventListener('click', () => {
