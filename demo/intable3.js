@@ -103,6 +103,16 @@ document.currentFragment.loaded.then(fragment => {
     var createEntry = (entry, editMode = false) => {
       var cloneRow = document.importNode(
         (this.querySelector('template#row') || tmplRow).content, true);
+      [...cloneRow.children].forEach(child => {
+        var found = child.innerHTML.match(/[$][{]\w+[}]/g);
+        if (found) {
+          child.innerHTML = found.map(item => item.replace(/[${}]/g, ''))
+            .reduce((acc, key) => {
+              acc = acc.replace('${' + key + '}', entry[key]);
+              return acc;
+            }, child.innerHTML);
+        }
+      });
       var tr = cloneRow.querySelector('tr');
       var btnDelete = cloneRow.querySelector('button#delete');
       btnDelete.addEventListener('click', () => {
