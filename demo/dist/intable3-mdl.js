@@ -120,7 +120,13 @@ document.currentFragment.MaterialFragment.loaded.then(fragment => {
         table.dispatchEvent(new CustomEvent('delete-entry', {
           detail: {
             entry: entry,
-            update: function() {
+            update: () => {
+              this.dispatchEvent(new CustomEvent('delete-row', {
+                detail: {
+                  element: tr,
+                  entry: entry
+                }
+              }));
               tr.remove();
             }
           }
@@ -130,11 +136,17 @@ document.currentFragment.MaterialFragment.loaded.then(fragment => {
       Object.keys(entry).forEach(key => {
         var _tmplCol = this.querySelector(`template[col="${key}"]`) || tmplCol;
         var cloneCol = document.importNode(_tmplCol.content, true);
-        setupCol(cloneCol, key, entry, columns[key], editMode);
+        setupCol.bind(this)(cloneCol, key, entry, columns[key], editMode);
         tr.appendChild(cloneCol);
       });
       // move actions to the last place
       tr.appendChild(tr.querySelector('[actions=""]'));
+      this.dispatchEvent(new CustomEvent('create-row', {
+        detail: {
+          element: tr,
+          entry: entry
+        }
+      }));
       return cloneRow;
     };
 
@@ -155,7 +167,7 @@ document.currentFragment.MaterialFragment.loaded.then(fragment => {
     this.appendChild(cloneTable);
   });
 
-  function setupCol(el, key, entry, description, editMode = false) {
+  var setupCol = (el, key, entry, description, editMode = false) => {
     var td = el.querySelector('td');
     description.type = description.type || 'text';
     if (description.type === 'hidden') {
@@ -188,7 +200,8 @@ document.currentFragment.MaterialFragment.loaded.then(fragment => {
     form.addEventListener('submit', e => {
       e.preventDefault();
 
-      var idEl = e.target.closest('tr').querySelector('input[name="id"]');
+      var tr = e.target.closest('tr');
+      var idEl = tr.querySelector('input[name="id"]');
       var id = idEl.value;
       var fd = new FormData(e.target).toJSON();
       fd.id = id;
@@ -198,6 +211,12 @@ document.currentFragment.MaterialFragment.loaded.then(fragment => {
           form: fd,
           update: (entry) => {
             update(entry);
+            this.dispatchEvent(new CustomEvent('update-row', {
+              detail: {
+                element: tr,
+                entry: entry
+              }
+            }));
             input.blur();
           }
         }
@@ -219,7 +238,7 @@ document.currentFragment.MaterialFragment.loaded.then(fragment => {
         span.innerHTML = `<span style="color:gray;">${description.text}</span>`;
       }
     }
-  }
+  };
 
     }
   }
