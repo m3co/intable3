@@ -86,7 +86,8 @@ document.currentFragment.MaterialFragment.loaded.then(fragment => {
   });
 
   fetch(urlDescribe).then(response => response.json()).then(columns => {
-    var cloneThead = document.importNode(tmplThead.content, true);
+    var cloneThead = document.importNode((
+      this.querySelector('template#thead') || tmplThead).content, true);
     var tr = cloneThead.querySelector('tr');
     Object.keys(columns).forEach(key => {
       var cloneTheadCol = document.importNode(tmplTheadCol.content, true);
