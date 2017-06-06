@@ -34,6 +34,18 @@
             <button id="delete">Deleto</button>
           </td>
         </tr>
+        <tr>
+          <td colspan="7">
+            <x-inline-table
+              url-describe="/api/datas/describe"
+              url-create="/api/data"
+              url-index="/api/datas/sliced"
+              url-show="/api/data/:id"
+              url-update="/api/data/:id"
+              url-delete="/api/data/:id">
+            </x-inline-table>
+          </td>
+        </tr>
       </template>
     </x-inline-table>
   </body>

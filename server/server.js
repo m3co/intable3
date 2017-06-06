@@ -42,6 +42,12 @@ app.get('/api/datas/describe', (req, res) => {
   });
 });
 
+app.get('/api/datas/sliced', (req, res) => {
+  fs.readFile('dummy.json', 'utf8', (err, data) => {
+    res.json(JSON.parse(data).slice(0, 10));
+  });
+});
+
 app.get('/api/datas', (req, res) => {
   fs.readFile('dummy.json', 'utf8', (err, data) => {
     res.json(JSON.parse(data));
