@@ -8,7 +8,7 @@ document.currentFragment.loaded.then(fragment => {
   var tmplTheadCol = fragment.querySelector('template#thead-col');
   var tmplRow = fragment.querySelector('template#row');
   var tmplCol = fragment.querySelector('template#col');
-  var tmplTableSpace = fragment.querySelector('template#inline3-space');
+  var tmplTable = fragment.querySelector('template#table');
 
   function doTemplateOverText(text, entry) {
     var concreteText = text;
@@ -34,8 +34,9 @@ document.currentFragment.loaded.then(fragment => {
   var urlUpdate = this.getAttribute('url-update');
   var urlDelete = this.getAttribute('url-delete');
 
-  var cloneTableSpace = document.importNode(tmplTableSpace.content, true);
-  var table = cloneTableSpace.querySelector('table');
+  var cloneTable = document.importNode((
+    this.querySelector('template#table') || tmplTable).content, true);
+  var table = cloneTable.querySelector('table');
   var tbody = table.querySelector('tbody');
 
   table.addEventListener('submit-entry', e => {
@@ -143,7 +144,7 @@ document.currentFragment.loaded.then(fragment => {
       });
     });
 
-    var btnAdd = cloneTableSpace.querySelector('button#add');
+    var btnAdd = cloneTable.querySelector('button#add');
     btnAdd.addEventListener('click', () => {
       tbody.insertBefore(createEntry.bind(this)(Object.keys(columns).reduce((acc, key) => {
         acc[key] = '';
@@ -151,7 +152,7 @@ document.currentFragment.loaded.then(fragment => {
       }, {}), true), tbody.firstElementChild);
     });
 
-    this.appendChild(cloneTableSpace);
+    this.appendChild(cloneTable);
   });
 
   function setupCol(el, key, entry, description, editMode = false) {
