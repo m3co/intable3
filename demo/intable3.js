@@ -94,7 +94,9 @@ document.currentFragment.loaded.then(fragment => {
       var span = cloneTheadCol.querySelector('span');
       span.textContent = columns[key].text;
       if (columns[key].type === 'hidden') {
-        cloneTheadCol.querySelector('td').hidden = true;
+        var td = cloneTheadCol.querySelector('td');
+        td.hidden = true;
+        td.id = key;
       }
       tr.appendChild(cloneTheadCol);
     });
@@ -135,8 +137,8 @@ document.currentFragment.loaded.then(fragment => {
       });
 
       Object.keys(entry).forEach(key => {
-        var _tmplCol = this.querySelector(`template[col="${key}"]`) || tmplCol;
-        var cloneCol = document.importNode(_tmplCol.content, true);
+        var cloneCol = document.importNode((
+          this.querySelector(`template[col="${key}"]`) || tmplCol).content, true);
         setupCol.bind(this)(cloneCol, key, entry, columns[key], editMode);
         tr.appendChild(cloneCol);
       });
@@ -170,6 +172,7 @@ document.currentFragment.loaded.then(fragment => {
 
   var setupCol = (el, key, entry, description, editMode = false) => {
     var td = el.querySelector('td');
+    td.id = key;
     description.type = description.type || 'text';
     if (description.type === 'hidden') {
       td.hidden = true;
