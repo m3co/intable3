@@ -73,6 +73,9 @@ document.currentFragment.loaded.then(fragment => {
   table.addEventListener('delete-entry', e => {
     var entry = e.detail.entry;
     var update = e.detail.update;
+    if (!entry.id) {
+      return update();
+    }
     var url = doTemplateOverText(urlDelete, entry);
     fetch(url, {
       method: 'delete',
