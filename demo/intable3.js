@@ -189,23 +189,32 @@ document.currentFragment.loaded.then(fragment => {
     input.placeholder = description.text;
     update(entry);
 
-    function toggle(doFocus = true) {
-      span.hidden = !span.hidden;
-      form.hidden = !form.hidden;
-      if (!form.hidden && doFocus) {
-        input.focus();
-      }
-      update(entry);
+    function showForm() {
+      span.hidden = true;
+      form.hidden = false;
+      input.focus();
+    }
+    function hideForm() {
+      span.hidden = false;
+      form.hidden = true;
     }
 
-    span.addEventListener('click', toggle);
-    input.addEventListener('blur', toggle);
+    var alreadySubmit = false;
+    span.addEventListener('click', showForm);
+    input.addEventListener('blur', hideForm);
     input.addEventListener('change', e => {
       form.dispatchEvent(new Event('submit'));
+      alreadySubmit = true;
     });
 
     form.addEventListener('submit', e => {
       e.preventDefault();
+      if (alreadySubmit) {
+        setTimeout(() => { // let's see the evil's face here in this line
+          alreadySubmit = false;
+        }, 0);
+        return;
+      }
 
       var tr = e.target.closest('tr');
       var idEl = tr.querySelector('input[name="id"]');
@@ -224,7 +233,7 @@ document.currentFragment.loaded.then(fragment => {
                 entry: entry
               }
             }));
-            input.blur();
+            hideForm();
           }
         }
       }));
