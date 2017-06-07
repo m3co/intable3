@@ -164,7 +164,7 @@ document.currentFragment.loaded.then(fragment => {
       tbody.insertBefore(createEntry.bind(this)(Object.keys(columns).reduce((acc, key) => {
         acc[key] = '';
         return acc;
-      }, {}), true), tbody.firstElementChild);
+      }, {})), tbody.firstElementChild);
     });
 
     this.appendChild(cloneTable);
