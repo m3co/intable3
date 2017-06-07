@@ -106,6 +106,11 @@ document.currentFragment.loaded.then(fragment => {
     // move actions to the last place
     tr.appendChild(tr.querySelector('[actions=""]'));
     table.appendChild(cloneThead);
+    this.dispatchEvent(new CustomEvent('setup-head', {
+      detail: {
+        element: table.querySelector('thead')
+      }
+    }));
 
     var createEntry = (entry) => {
       var cloneRow = document.importNode(
