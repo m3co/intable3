@@ -104,7 +104,7 @@ document.currentFragment.loaded.then(fragment => {
     tr.appendChild(tr.querySelector('[actions=""]'));
     table.appendChild(cloneThead);
 
-    var createEntry = (entry, editMode = false) => {
+    var createEntry = (entry) => {
       var cloneRow = document.importNode(
         (this.querySelector('template#row') || tmplRow).content, true);
 
@@ -139,7 +139,7 @@ document.currentFragment.loaded.then(fragment => {
       Object.keys(entry).forEach(key => {
         var cloneCol = document.importNode((
           this.querySelector(`template[col="${key}"]`) || tmplCol).content, true);
-        setupCol.bind(this)(cloneCol, key, entry, columns[key], editMode);
+        setupCol.bind(this)(cloneCol, key, entry, columns[key]);
         tr.appendChild(cloneCol);
       });
       // move actions to the last place
@@ -170,7 +170,7 @@ document.currentFragment.loaded.then(fragment => {
     this.appendChild(cloneTable);
   });
 
-  var setupCol = (el, key, entry, description, editMode = false) => {
+  var setupCol = (el, key, entry, description) => {
     var td = el.querySelector('td');
     td.id = key;
     description.type = description.type || 'text';
@@ -226,10 +226,6 @@ document.currentFragment.loaded.then(fragment => {
         }
       }));
     });
-
-    if (editMode) {
-      toggle(false);
-    }
 
     function update(entry) {
       var tr = form.closest('tr');
