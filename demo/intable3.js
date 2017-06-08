@@ -194,6 +194,9 @@ document.currentFragment.loaded.then(fragment => {
     input.placeholder = description.text;
     update(entry);
 
+    if (description.readonly) {
+      return;
+    }
     function showForm() {
       span.hidden = true;
       form.hidden = false;
