@@ -5,22 +5,26 @@
   },
   "firstName": {
     "text": "First Name",
-    "readonly": true
+    "readonly": true,
+    "order": 1
   },
   "lastName": {
     "text": "Last Name",
-    "required": true
+    "required": true,
+    "order": 4
   },
   "email": {
     "text": "Email",
     "required": true,
-    "is": "email-element"
+    "is": "email-element",
+    "order": 3
   },
   "createdAt": {
     "text": "Created At",
     "type": "hidden"
   },
   "ip_address": {
-    "text": "Ip Address"
+    "text": "Ip Address",
+    "order": 2
   }
 }

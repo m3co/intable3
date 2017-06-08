@@ -1,6 +1,16 @@
 'use strict';
 document.currentFragment.loaded.then(fragment => {
 
+  function orderDescription(description) {
+    return Object.keys(description).map(key => {
+        return { name: key, order: Number(description[key].order || 0) };
+      }).sort((a, b) => {
+        if (a.order < b.order) return -1;
+        if (a.order > b.order) return 1;
+        return 0;
+      }).map(item => item.name);
+  }
+
   var headers = new Headers();
   headers.append('Content-Type', 'application/json');
 
@@ -93,7 +103,7 @@ document.currentFragment.loaded.then(fragment => {
       this.querySelector('template#thead') || tmplThead).content, true);
     var tr = cloneThead.querySelector('tr');
     var requiredFields = [];
-    Object.keys(columns).forEach(key => {
+    orderDescription(columns).forEach(key => {
       var cloneTheadCol = document.importNode(tmplTheadCol.content, true);
       var span = cloneTheadCol.querySelector('span');
       span.textContent = columns[key].text;
@@ -148,7 +158,7 @@ document.currentFragment.loaded.then(fragment => {
         }));
       });
 
-      Object.keys(entry).forEach(key => {
+      orderDescription(columns).forEach(key => {
         var cloneCol = document.importNode((
           this.querySelector(`template[col="${key}"]`) || tmplCol).content, true);
         setupCol.bind(this)(cloneCol, key, entry, columns[key], requiredFields);
@@ -229,7 +239,7 @@ document.currentFragment.loaded.then(fragment => {
     });
     setTimeout(() => {
       var tr = form.closest('tr');
-      requiredFields.forEach(field => {
+      Object.keys(entry).forEach(field => {
         var td = tr.querySelector(`#${field}`);
         if (td) {
           requiredFields.forEach(field => {
