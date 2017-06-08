@@ -8,10 +8,12 @@
     "readonly": true
   },
   "lastName": {
-    "text": "Last Name"
+    "text": "Last Name",
+    "required": true
   },
   "email": {
     "text": "Email",
+    "required": true,
     "is": "email-element"
   },
   "createdAt": {

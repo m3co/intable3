@@ -92,6 +92,7 @@ document.currentFragment.loaded.then(fragment => {
     var cloneThead = document.importNode((
       this.querySelector('template#thead') || tmplThead).content, true);
     var tr = cloneThead.querySelector('tr');
+    var requiredFields = [];
     Object.keys(columns).forEach(key => {
       var cloneTheadCol = document.importNode(tmplTheadCol.content, true);
       var span = cloneTheadCol.querySelector('span');
@@ -100,6 +101,9 @@ document.currentFragment.loaded.then(fragment => {
         var td = cloneTheadCol.querySelector('td');
         td.hidden = true;
         td.id = key;
+      }
+      if (columns[key].required) {
+        requiredFields.push(key);
       }
       tr.appendChild(cloneTheadCol);
     });
@@ -147,7 +151,7 @@ document.currentFragment.loaded.then(fragment => {
       Object.keys(entry).forEach(key => {
         var cloneCol = document.importNode((
           this.querySelector(`template[col="${key}"]`) || tmplCol).content, true);
-        setupCol.bind(this)(cloneCol, key, entry, columns[key]);
+        setupCol.bind(this)(cloneCol, key, entry, columns[key], requiredFields);
         tr.appendChild(cloneCol);
       });
       // move actions to the last place
@@ -178,7 +182,7 @@ document.currentFragment.loaded.then(fragment => {
     this.appendChild(cloneTable);
   });
 
-  var setupCol = (el, key, entry, description) => {
+  var setupCol = (el, key, entry, description, requiredFields) => {
     var td = el.querySelector('td');
     td.id = key;
     description.type = description.type || 'text';
@@ -201,6 +205,12 @@ document.currentFragment.loaded.then(fragment => {
       return;
     }
     function showForm() {
+      var tr = form.closest('tr');
+      requiredFields.forEach(field => {
+        var inputOriginal = tr.querySelector(`#${field} input[name="${field}"]`);
+        var inputExtra = form.querySelector(`[name="${field}"]`);
+        inputExtra.value = inputOriginal.value;
+      });
       span.hidden = true;
       form.hidden = false;
       input.focus();
@@ -217,6 +227,27 @@ document.currentFragment.loaded.then(fragment => {
       form.dispatchEvent(new Event('submit'));
       alreadySubmit = true;
     });
+    setTimeout(() => {
+      var tr = form.closest('tr');
+      requiredFields.forEach(field => {
+        var td = tr.querySelector(`#${field}`);
+        if (td) {
+          requiredFields.forEach(field => {
+            var input = td.querySelector(`[name="${field}"]`);
+            if (!input) {
+              input = document.createElement('input');
+              input.name = field;
+              input.required = true;
+              input.hidden = true;
+              td.querySelector('form')
+                .insertBefore(input,
+                  td.querySelector('form input[type="submit"]'));
+            }
+            input.required = true;
+          });
+        }
+      });
+    }, 0)
 
     form.addEventListener('submit', e => {
       e.preventDefault();
