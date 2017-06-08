@@ -107,11 +107,11 @@ document.currentFragment.loaded.then(fragment => {
       var cloneTheadCol = document.importNode(tmplTheadCol.content, true);
       var span = cloneTheadCol.querySelector('span');
       span.textContent = columns[key].text;
+      var td = cloneTheadCol.querySelector('td');
       if (columns[key].type === 'hidden') {
-        var td = cloneTheadCol.querySelector('td');
         td.hidden = true;
-        td.id = key;
       }
+      td.id = key;
       if (columns[key].required) {
         requiredFields.push(key);
       }
