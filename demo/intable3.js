@@ -257,6 +257,9 @@ document.currentFragment.loaded.then(fragment => {
         }, 0);
         return;
       }
+      if (!form.checkValidity()) {
+        return;
+      }
 
       var tr = e.target.closest('tr');
       var idEl = tr.querySelector('input[name="id"]');
