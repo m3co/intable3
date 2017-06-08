@@ -11,7 +11,8 @@
     "text": "Last Name"
   },
   "email": {
-    "text": "Email"
+    "text": "Email",
+    "is": "email-element"
   },
   "createdAt": {
     "text": "Created At",

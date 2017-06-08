@@ -191,6 +191,9 @@ document.currentFragment.loaded.then(fragment => {
     var input = form.querySelector('input');
     input.name = key;
     input.type = description.type;
+    if (description.is) {
+      input.setAttribute('is', description.is);
+    }
     input.placeholder = description.text;
     update(entry);
 
