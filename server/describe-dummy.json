@@ -1,7 +1,8 @@
 {
   "id": {
     "text": "Id",
-    "type": "hidden"
+    "type": "number",
+    "step": 0.01
   },
   "firstName": {
     "text": "First Name",

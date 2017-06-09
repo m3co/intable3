@@ -208,6 +208,9 @@ document.currentFragment.loaded.then(fragment => {
     if (description.is) {
       input.setAttribute('is', description.is);
     }
+    if (description.step) {
+      input.setAttribute('step', description.step);
+    }
     input.placeholder = description.text;
     update(entry);
 
