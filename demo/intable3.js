@@ -140,7 +140,7 @@ document.currentFragment.loaded.then(fragment => {
         });
       }
       var tr = cloneRow.querySelector('tr');
-      var btnDelete = cloneRow.querySelector('button#delete');
+      var btnDelete = cloneRow.querySelector('#delete');
       btnDelete.addEventListener('click', () => {
         table.dispatchEvent(new CustomEvent('delete-entry', {
           detail: {
@@ -181,7 +181,7 @@ document.currentFragment.loaded.then(fragment => {
       });
     });
 
-    var btnAdd = cloneTable.querySelector('button#add');
+    var btnAdd = cloneTable.querySelector('#add');
     btnAdd.addEventListener('click', () => {
       tbody.insertBefore(createEntry.bind(this)(Object.keys(columns).reduce((acc, key) => {
         acc[key] = '';
