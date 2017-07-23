@@ -59,6 +59,9 @@ document.currentFragment.loaded.then(fragment => {
 
         Object.keys(form).forEach(key => {
           entry[key] = form[key];
+          if (form[key] === '') {
+            delete form[key];
+          }
         });
 
         var action;
